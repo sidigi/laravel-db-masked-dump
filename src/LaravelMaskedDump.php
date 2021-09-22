@@ -60,6 +60,7 @@ class LaravelMaskedDump
             if ($value === null) {
                 return 'NULL';
             }
+
             if ($value === '') {
                 return '""';
             }
@@ -95,6 +96,7 @@ class LaravelMaskedDump
 
         $queryBuilder = $this->definition->getConnection()
             ->table($table->getDoctrineTable()->getName());
+
 
         $table->modifyQuery($queryBuilder);
 

@@ -2,8 +2,8 @@
 
 namespace BeyondCode\LaravelMaskedDumper\TableDefinitions;
 
-use BeyondCode\LaravelMaskedDumper\Contracts\Column;
 use BeyondCode\LaravelMaskedDumper\ColumnDefinitions\ColumnDefinition;
+use BeyondCode\LaravelMaskedDumper\Contracts\Column;
 use Doctrine\DBAL\Schema\Table;
 
 class TableDefinition
@@ -48,15 +48,16 @@ class TableDefinition
         return $this;
     }
 
-    public function replace(string $column, $replacer)
+    public function replace(string $column, $replacer, $replaceNull = true)
     {
-        $this->columns[$column] = ColumnDefinition::replace($column, $replacer);
+        $this->columns[$column] = ColumnDefinition::replace($column, $replacer, $replaceNull);
 
         return $this;
     }
 
     /**
      * @param string $column
+     *
      * @return Column|null
      */
     public function findColumn(string $column)
@@ -83,6 +84,7 @@ class TableDefinition
         if (is_null($this->query)) {
             return;
         }
+
         call_user_func($this->query, $query);
     }
 }

@@ -14,9 +14,11 @@ return [
             $table->replace('name', function (Faker $faker) {
                 return $faker->name;
             });
+
             $table->replace('email', function (Faker $faker) {
                 return $faker->safeEmail;
-            });
+            }, false);
+
             $table->mask('password');
         })
         ->schemaOnly('failed_jobs')

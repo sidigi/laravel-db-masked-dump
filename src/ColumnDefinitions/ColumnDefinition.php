@@ -10,8 +10,8 @@ class ColumnDefinition
         return new MaskedColumn($column, $maskCharacter);
     }
 
-    public static function replace(string $column, $replacer)
+    public static function replace(string $column, $replacer, $replaceNull)
     {
-        return new ReplacedColumn($column, $replacer);
+        return new ReplacedColumn($column, $replacer, $replaceNull);
     }
 }
