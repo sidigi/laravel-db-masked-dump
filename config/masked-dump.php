@@ -1,7 +1,7 @@
 <?php
 
-use BeyondCode\LaravelMaskedDumper\DumpSchema;
-use BeyondCode\LaravelMaskedDumper\TableDefinitions\TableDefinition;
+use FenixDumper\LaravelMaskedDumper\DumpSchema;
+use FenixDumper\LaravelMaskedDumper\TableDefinitions\TableDefinition;
 use Faker\Generator as Faker;
 
 return [

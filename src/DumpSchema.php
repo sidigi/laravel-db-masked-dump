@@ -1,8 +1,8 @@
 <?php
 
-namespace BeyondCode\LaravelMaskedDumper;
+namespace FenixDumper\LaravelMaskedDumper;
 
-use BeyondCode\LaravelMaskedDumper\TableDefinitions\TableDefinition;
+use FenixDumper\LaravelMaskedDumper\TableDefinitions\TableDefinition;
 use Doctrine\DBAL\Schema\Table;
 use Faker\Factory;
 use Illuminate\Database\ConnectionInterface;

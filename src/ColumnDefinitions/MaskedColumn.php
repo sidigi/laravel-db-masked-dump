@@ -1,8 +1,8 @@
 <?php
 
-namespace BeyondCode\LaravelMaskedDumper\ColumnDefinitions;
+namespace FenixDumper\LaravelMaskedDumper\ColumnDefinitions;
 
-use BeyondCode\LaravelMaskedDumper\Contracts\Column;
+use FenixDumper\LaravelMaskedDumper\Contracts\Column;
 
 class MaskedColumn implements Column
 {

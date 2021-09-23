@@ -1,10 +1,10 @@
 <?php
 
-namespace BeyondCode\LaravelMaskedDumper\Tests;
+namespace FenixDumper\LaravelMaskedDumper\Tests;
 
-use BeyondCode\LaravelMaskedDumper\DumpSchema;
-use BeyondCode\LaravelMaskedDumper\LaravelMaskedDumpServiceProvider;
-use BeyondCode\LaravelMaskedDumper\TableDefinitions\TableDefinition;
+use FenixDumper\LaravelMaskedDumper\DumpSchema;
+use FenixDumper\LaravelMaskedDumper\LaravelMaskedDumpServiceProvider;
+use FenixDumper\LaravelMaskedDumper\TableDefinitions\TableDefinition;
 use Faker\Generator;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Foundation\Testing\WithFaker;

@@ -1,8 +1,8 @@
 <?php
 
-namespace BeyondCode\LaravelMaskedDumper;
+namespace FenixDumper\LaravelMaskedDumper;
 
-use BeyondCode\LaravelMaskedDumper\TableDefinitions\TableDefinition;
+use FenixDumper\LaravelMaskedDumper\TableDefinitions\TableDefinition;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Schema;
 use Illuminate\Console\OutputStyle;

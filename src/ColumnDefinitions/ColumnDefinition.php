@@ -1,6 +1,6 @@
 <?php
 
-namespace BeyondCode\LaravelMaskedDumper\ColumnDefinitions;
+namespace FenixDumper\LaravelMaskedDumper\ColumnDefinitions;
 
 class ColumnDefinition
 {

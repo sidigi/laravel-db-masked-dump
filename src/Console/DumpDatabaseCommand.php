@@ -1,8 +1,8 @@
 <?php
 
-namespace BeyondCode\LaravelMaskedDumper\Console;
+namespace FenixDumper\LaravelMaskedDumper\Console;
 
-use BeyondCode\LaravelMaskedDumper\LaravelMaskedDump;
+use FenixDumper\LaravelMaskedDumper\LaravelMaskedDump;
 use Illuminate\Console\Command;
 
 class DumpDatabaseCommand extends Command

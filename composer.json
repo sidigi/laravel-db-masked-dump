@@ -29,12 +29,12 @@
     },
     "autoload": {
         "psr-4": {
-            "BeyondCode\\LaravelMaskedDumper\\": "src"
+            "FenixDumper\\LaravelMaskedDumper\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "BeyondCode\\LaravelMaskedDumper\\Tests\\": "tests"
+            "FenixDumper\\LaravelMaskedDumper\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -48,7 +48,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "BeyondCode\\LaravelMaskedDumper\\LaravelMaskedDumpServiceProvider"
+                "FenixDumper\\LaravelMaskedDumper\\LaravelMaskedDumpServiceProvider"
             ]
         }
     },
