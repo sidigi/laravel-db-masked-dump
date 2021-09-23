@@ -52,9 +52,9 @@ class LaravelMaskedDump
         /** @var Connection $connection */
         $connection = $this->definition->getConnection()->getDoctrineConnection();
 
-        return collect($row)->map(function ($value, $column) use ($connection, $table) {
+        return collect($row)->map(function ($value, $column) use ($row, $connection, $table) {
             if ($columnDefinition = $table->findColumn($column)) {
-                $value = $columnDefinition->modifyValue($value);
+                $value = $columnDefinition->modifyValue($value, $row);
             }
 
             if ($value === null) {
@@ -101,7 +101,7 @@ class LaravelMaskedDump
         $table->modifyQuery($queryBuilder);
 
         $queryBuilder->get()
-            ->each(function ($row, $index) use ($table, &$query) {
+            ->each(function ($row, $index) use ($queryBuilder, $table, &$query) {
                 $row = $this->transformResultForInsert((array)$row, $table);
                 $tableName = $table->getDoctrineTable()->getName();
 

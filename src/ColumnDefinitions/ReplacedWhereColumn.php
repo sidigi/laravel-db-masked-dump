@@ -18,7 +18,7 @@ class ReplacedWhereColumn implements Column
         $this->checker = $checker;
     }
 
-    public function modifyValue($value)
+    public function modifyValue($value, $rows)
     {
         $bool = (bool) call_user_func($this->checker, $value);
 
@@ -27,7 +27,7 @@ class ReplacedWhereColumn implements Column
         }
 
         if (is_callable($this->replacer)) {
-            return call_user_func_array($this->replacer, [Factory::create(), $value]);
+            return call_user_func_array($this->replacer, [Factory::create(), $value, $rows]);
         }
 
         return $this->replacer;

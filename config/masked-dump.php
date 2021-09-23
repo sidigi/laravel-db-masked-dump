@@ -15,7 +15,7 @@ return [
                 return $faker->name;
             });
 
-            $table->replace('email', function (Faker $faker) {
+            $table->replace('email', function (Faker $faker, $value) {
                 return $faker->safeEmail;
             }, false);
 

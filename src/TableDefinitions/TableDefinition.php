@@ -62,25 +62,18 @@ class TableDefinition
         return $this;
     }
 
-    public function replaceWhereNot(string $column, $replacer, callable $checker): self
-    {
-        $this->columns[$column] = ColumnDefinition::replaceWhereNot($column, $replacer, $checker);
-
-        return $this;
-    }
-
     /**
      * @param string $column
      *
      * @return Column|null
      */
-    public function findColumn(string $column)
+    public function findColumn(string $column): ?Column
     {
         if (array_key_exists($column, $this->columns)) {
             return $this->columns[$column];
         }
 
-        return false;
+        return null;
     }
 
     public function getDoctrineTable()

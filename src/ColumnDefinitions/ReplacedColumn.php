@@ -18,16 +18,14 @@ class ReplacedColumn implements Column
         $this->replaceNull = $replaceNull;
     }
 
-    public function modifyValue($value)
+    public function modifyValue($value, $rows)
     {
         if (! $this->replaceNull && is_null($value)) {
             return $value;
         }
 
-        $faker = Factory::create();
-
         if (is_callable($this->replacer)) {
-            return call_user_func_array($this->replacer, [$faker, $value]);
+            return call_user_func_array($this->replacer, [Factory::create(), $value, $rows]);
         }
 
         return $this->replacer;

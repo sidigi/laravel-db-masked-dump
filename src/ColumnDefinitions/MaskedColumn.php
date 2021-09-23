@@ -15,7 +15,7 @@ class MaskedColumn implements Column
         $this->maskCharacter = $maskCharacter;
     }
 
-    public function modifyValue($value)
+    public function modifyValue($value, $rows)
     {
         return str_repeat($this->maskCharacter, strlen($value));
     }

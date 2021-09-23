@@ -19,9 +19,4 @@ class ColumnDefinition
     {
         return new ReplacedWhereColumn($column, $replacer, $checker);
     }
-
-    public static function replaceWhereNot(string $column, $replacer, $checker)
-    {
-        return new ReplacedWhereNotColumn($column, $replacer, $checker);
-    }
 }
