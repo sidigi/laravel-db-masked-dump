@@ -2,8 +2,8 @@
 
 namespace BeyondCode\LaravelMaskedDumper\TableDefinitions;
 
-use BeyondCode\LaravelMaskedDumper\Contracts\Column;
 use BeyondCode\LaravelMaskedDumper\ColumnDefinitions\ColumnDefinition;
+use BeyondCode\LaravelMaskedDumper\Contracts\Column;
 use Doctrine\DBAL\Schema\Table;
 
 class TableDefinition
@@ -11,10 +11,10 @@ class TableDefinition
     const DUMP_FULL = 'full';
     const DUMP_SCHEMA = 'schema';
 
-    protected $table;
-    protected $dumpType;
     protected $query;
-    protected $columns = [];
+    protected Table $table;
+    protected string $dumpType;
+    protected array $columns = [];
 
     public function __construct(Table $table)
     {
@@ -22,50 +22,53 @@ class TableDefinition
         $this->dumpType = static::DUMP_FULL;
     }
 
-    public function schemaOnly()
+    public function schemaOnly(): self
     {
         $this->dumpType = static::DUMP_SCHEMA;
 
         return $this;
     }
 
-    public function fullDump()
+    public function fullDump(): self
     {
         $this->dumpType = static::DUMP_FULL;
 
         return $this;
     }
 
-    public function query(callable $callable)
+    public function query(callable $callable): void
     {
         $this->query = $callable;
     }
 
-    public function mask(string $column)
+    public function mask(string $column, string $maskCharacter = 'x'): self
     {
-        $this->columns[$column] = ColumnDefinition::mask($column);
+        $this->columns[$column] = ColumnDefinition::mask($column, $maskCharacter);
 
         return $this;
     }
 
-    public function replace(string $column, $replacer)
+    public function replace(string $column, $replacer, $replaceNull = true): self
     {
-        $this->columns[$column] = ColumnDefinition::replace($column, $replacer);
+        $this->columns[$column] = ColumnDefinition::replace($column, $replacer, $replaceNull);
 
         return $this;
     }
 
-    /**
-     * @param string $column
-     * @return Column|null
-     */
-    public function findColumn(string $column)
+    public function whenReplace(string $column, callable $condition, $replacer): self
+    {
+        $this->columns[$column] = ColumnDefinition::replaceWhere($column, $replacer, $condition);
+
+        return $this;
+    }
+
+    public function findColumn(string $column): ?Column
     {
         if (array_key_exists($column, $this->columns)) {
             return $this->columns[$column];
         }
 
-        return false;
+        return null;
     }
 
     public function getDoctrineTable()
@@ -73,16 +76,17 @@ class TableDefinition
         return $this->table;
     }
 
-    public function shouldDumpData()
+    public function shouldDumpData(): bool
     {
         return $this->dumpType === static::DUMP_FULL;
     }
 
-    public function modifyQuery($query)
+    public function modifyQuery($query): void
     {
         if (is_null($this->query)) {
             return;
         }
+
         call_user_func($this->query, $query);
     }
 }

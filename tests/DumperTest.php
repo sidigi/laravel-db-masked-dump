@@ -7,6 +7,7 @@ use BeyondCode\LaravelMaskedDumper\LaravelMaskedDumpServiceProvider;
 use BeyondCode\LaravelMaskedDumper\TableDefinitions\TableDefinition;
 use Faker\Generator;
 use Illuminate\Auth\Authenticatable;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
 use Orchestra\Testbench\TestCase;
 use Spatie\Snapshots\MatchesSnapshots;
@@ -14,6 +15,7 @@ use Spatie\Snapshots\MatchesSnapshots;
 class DumperTest extends TestCase
 {
     use MatchesSnapshots;
+    use WithFaker;
 
     protected function getPackageProviders($app)
     {
@@ -49,7 +51,7 @@ class DumperTest extends TestCase
 
         $this->app['config']['masked-dump.default'] = DumpSchema::define()->allTables();
 
-        $this->artisan('db:dump', [
+        $this->artisan('db:masked-dump', [
             'output' => $outputFile
         ]);
 
@@ -78,7 +80,7 @@ class DumperTest extends TestCase
                 $table->mask('name');
             });
 
-        $this->artisan('db:dump', [
+        $this->artisan('db:masked-dump', [
             'output' => $outputFile
         ]);
 
@@ -107,7 +109,7 @@ class DumperTest extends TestCase
                 $table->replace('password', 'test');
             });
 
-        $this->artisan('db:dump', [
+        $this->artisan('db:masked-dump', [
             'output' => $outputFile
         ]);
 
@@ -122,7 +124,7 @@ class DumperTest extends TestCase
         DB::table('users')
             ->insert([
                 'name' => 'Marcel',
-                'email' => 'marcel@beyondco.de',
+                'email' => '1marcel@beyondco.de',
                 'password' => 'test',
                 'created_at' => '2021-01-01 00:00:00',
                 'updated_at' => '2021-01-01 00:00:00',
@@ -134,15 +136,45 @@ class DumperTest extends TestCase
             ->allTables()
             ->table('users', function (TableDefinition $table, Generator $faker) {
                 $faker->seed(1);
-                $table->replace('email', $faker->safeEmail());
+                $table->replace('email', function ( $faker, $value, $rows) {
+                    return $faker->safeEmail;
+                });
             });
 
-        $this->artisan('db:dump', [
-            'output' => $outputFile
-        ]);
+        $this->artisan('db:masked-dump', ['output' => $outputFile]);
 
         $this->assertMatchesTextSnapshot(file_get_contents($outputFile));
     }
+
+    /** @test */
+    public function it_cant_replace_null_columns_with_faker_values_if_set_replaceNull()
+    {
+        $this->loadLaravelMigrations();
+
+        DB::table('users')
+            ->insert([
+                'name' => 'Marcel',
+                'email' => 'marcel@beyondco.de',
+                'password' => 'test',
+                'created_at' => '2021-01-01 00:00:00',
+                'updated_at' => null,
+            ]);
+
+        $outputFile = base_path('test.sql');
+
+        $this->app['config']['masked-dump.default'] = DumpSchema::define()
+            ->allTables()
+            ->table('users', function (TableDefinition $table, Generator $faker) {
+                $faker->seed(1);
+                $table->replace('updated_at', now()->toString(), false);
+            });
+
+        $this->artisan('db:masked-dump', ['output' => $outputFile]);
+
+        $this->assertMatchesTextSnapshot(file_get_contents($outputFile));
+    }
+
+    //add test for replaceWhere
 
     /** @test */
     public function it_can_dump_certain_tables_as_schema_only()
@@ -165,9 +197,7 @@ class DumperTest extends TestCase
             ->schemaOnly('migrations')
             ->schemaOnly('users');
 
-        $this->artisan('db:dump', [
-            'output' => $outputFile
-        ]);
+        $this->artisan('db:masked-dump', ['output' => $outputFile]);
 
         $this->assertMatchesTextSnapshot(file_get_contents($outputFile));
     }

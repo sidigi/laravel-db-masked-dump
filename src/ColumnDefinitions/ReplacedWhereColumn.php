@@ -5,23 +5,25 @@ namespace BeyondCode\LaravelMaskedDumper\ColumnDefinitions;
 use BeyondCode\LaravelMaskedDumper\Contracts\Column;
 use Faker\Factory;
 
-class ReplacedColumn implements Column
+class ReplacedWhereColumn implements Column
 {
     protected string $column;
     protected $replacer;
-    protected bool $replaceNull;
+    protected $checker;
 
-    public function __construct(string $column, $replacer, $replaceNull)
+    public function __construct(string $column, $replacer, callable $checker)
     {
         $this->column = $column;
         $this->replacer = $replacer;
-        $this->replaceNull = $replaceNull;
+        $this->checker = $checker;
     }
 
     public function modifyValue($value, $rows)
     {
-        if (! $this->replaceNull && is_null($value)) {
-            return null;
+        $bool = (bool) call_user_func($this->checker, $value);
+
+        if ($bool) {
+            return $value;
         }
 
         if (is_callable($this->replacer)) {

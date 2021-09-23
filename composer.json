@@ -13,18 +13,24 @@
             "email": "marcel@beyondco.de",
             "homepage": "https://beyondcode.de",
             "role": "Developer"
+        },
+        {
+            "name": "Sergey Demidenko",
+            "email": "sergefenix@gmail.com",
+            "role": "Developer"
         }
     ],
     "require": {
-        "php": "^7.3",
+        "php": "^7.4|^8.0",
         "doctrine/dbal": "^2.0|^3.0",
-        "fakerphp/faker": "^1.13",
+        "fakerphp/faker": "^1.15",
         "illuminate/console": "^7.0|^8.0",
-        "illuminate/support": "^7.0|^8.0"
+        "illuminate/support": "^7.0|^8.0",
+        "ext-zlib": "*"
     },
     "require-dev": {
-        "orchestra/testbench": "^6.12",
-        "phpunit/phpunit": "^8.0",
+        "orchestra/testbench": "^6.21",
+        "phpunit/phpunit": "^8.5",
         "spatie/phpunit-snapshot-assertions": "^4.2"
     },
     "autoload": {

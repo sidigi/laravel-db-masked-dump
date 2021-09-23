@@ -10,13 +10,25 @@ return [
      */
     'default' => DumpSchema::define()
         ->allTables()
-        ->table('users', function (TableDefinition $table) {
+        ->table('users', function (TableDefinition $table, Faker $faker) {
             $table->replace('name', function (Faker $faker) {
                 return $faker->name;
             });
-            $table->replace('email', function (Faker $faker) {
-                return $faker->safeEmail;
+
+            $table->replace('email', $faker->safeEmail, false);
+
+            $table->whenReplace('updated_at', function ($value) {
+                return (bool) $value;
+            }, $faker->safeEmail);
+
+            $table->replace('updated_at', function (Faker $faker, $value, $rows) {
+                if ($rows['created_at']) {
+                    return $value;
+                }
+
+                return now();
             });
+
             $table->mask('password');
         })
         ->schemaOnly('failed_jobs')

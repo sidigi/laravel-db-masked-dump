@@ -7,7 +7,7 @@ use BeyondCode\LaravelMaskedDumper\Contracts\Column;
 class MaskedColumn implements Column
 {
     protected $column;
-    protected $maskCharacter;
+    protected string $maskCharacter;
 
     public function __construct(string $column, string $maskCharacter)
     {
@@ -15,7 +15,7 @@ class MaskedColumn implements Column
         $this->maskCharacter = $maskCharacter;
     }
 
-    public function modifyValue($value)
+    public function modifyValue($value, $rows): string
     {
         return str_repeat($this->maskCharacter, strlen($value));
     }
