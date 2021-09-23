@@ -51,5 +51,7 @@
                 "BeyondCode\\LaravelMaskedDumper\\LaravelMaskedDumpServiceProvider"
             ]
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
