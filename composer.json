@@ -1,11 +1,11 @@
 {
-    "name": "beyondcode/laravel-masked-db-dump",
+    "name": "sergefenix/laravel-masked-db-dump",
     "description": "Dump masked information from your database",
     "keywords": [
-        "beyondcode",
+        "sergefenix",
         "laravel-masked-db-dump"
     ],
-    "homepage": "https://github.com/beyondcode/laravel-masked-db-dump",
+    "homepage": "https://github.com/sergefenix/laravel-masked-db-dump",
     "license": "MIT",
     "authors": [
         {
