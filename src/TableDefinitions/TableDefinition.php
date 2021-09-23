@@ -41,7 +41,7 @@ class TableDefinition
         $this->query = $callable;
     }
 
-    public function mask(string $column, string $maskCharacter = 'x'):self
+    public function mask(string $column, string $maskCharacter = 'x'): self
     {
         $this->columns[$column] = ColumnDefinition::mask($column, $maskCharacter);
 
@@ -55,18 +55,13 @@ class TableDefinition
         return $this;
     }
 
-    public function replaceWhere(string $column, $replacer, callable $checker): self
+    public function whenReplace(string $column, callable $condition, $replacer): self
     {
-        $this->columns[$column] = ColumnDefinition::replaceWhere($column, $replacer, $checker);
+        $this->columns[$column] = ColumnDefinition::replaceWhere($column, $replacer, $condition);
 
         return $this;
     }
 
-    /**
-     * @param string $column
-     *
-     * @return Column|null
-     */
     public function findColumn(string $column): ?Column
     {
         if (array_key_exists($column, $this->columns)) {

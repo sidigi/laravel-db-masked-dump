@@ -2,9 +2,10 @@
 
 namespace BeyondCode\LaravelMaskedDumper;
 
-use Faker\Factory;
-use Doctrine\DBAL\Schema\Table;
 use BeyondCode\LaravelMaskedDumper\TableDefinitions\TableDefinition;
+use Doctrine\DBAL\Schema\Table;
+use Faker\Factory;
+use Illuminate\Database\ConnectionInterface;
 use Illuminate\Support\Facades\DB;
 
 class DumpSchema
@@ -21,7 +22,7 @@ class DumpSchema
         $this->connectionName = $connectionName;
     }
 
-    public static function define($connectionName = null)
+    public static function define($connectionName = null): DumpSchema
     {
         return new static($connectionName);
     }
@@ -33,24 +34,21 @@ class DumpSchema
         });
     }
 
-    public function table(string $tableName, callable $tableDefinition)
+    public function table(string $tableName, callable $tableDefinition): self
     {
         $this->customizedTables[$tableName] = $tableDefinition;
 
         return $this;
     }
 
-    public function allTables()
+    public function allTables(): self
     {
         $this->loadAllTables = true;
 
         return $this;
     }
 
-    /**
-     * @return \Illuminate\Database\ConnectionInterface
-     */
-    public function getConnection()
+    public function getConnection(): ConnectionInterface
     {
         return DB::connection($this->connectionName);
     }

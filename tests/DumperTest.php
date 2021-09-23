@@ -124,7 +124,7 @@ class DumperTest extends TestCase
         DB::table('users')
             ->insert([
                 'name' => 'Marcel',
-                'email' => 'marcel@beyondco.de',
+                'email' => '1marcel@beyondco.de',
                 'password' => 'test',
                 'created_at' => '2021-01-01 00:00:00',
                 'updated_at' => '2021-01-01 00:00:00',
@@ -136,7 +136,9 @@ class DumperTest extends TestCase
             ->allTables()
             ->table('users', function (TableDefinition $table, Generator $faker) {
                 $faker->seed(1);
-                $table->replace('email', $faker->safeEmail());
+                $table->replace('email', function ( $faker, $value, $rows) {
+                    return $faker->safeEmail;
+                });
             });
 
         $this->artisan('db:masked-dump', ['output' => $outputFile]);

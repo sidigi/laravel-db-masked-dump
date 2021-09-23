@@ -10,23 +10,23 @@ return [
      */
     'default' => DumpSchema::define()
         ->allTables()
-        ->table('users', function (TableDefinition $table) {
+        ->table('users', function (TableDefinition $table, Faker $faker) {
             $table->replace('name', function (Faker $faker) {
                 return $faker->name;
             });
 
-            $table->replace('email', function (Faker $faker, $value) {
-                return $faker->safeEmail;
-            }, false);
+            $table->replace('email', $faker->safeEmail, false);
 
-            $table->replaceWhere('updated_at', function (Faker $faker) {
-                return $faker->safeEmail;
-            }, function ($value) {
-                if ($value == null) {
-                    return true;
+            $table->whenReplace('updated_at', function ($value) {
+                return (bool) $value;
+            }, $faker->safeEmail);
+
+            $table->replace('updated_at', function (Faker $faker, $value, $rows) {
+                if ($rows['created_at']) {
+                    return $value;
                 }
 
-                return false;
+                return now();
             });
 
             $table->mask('password');

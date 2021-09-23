@@ -7,27 +7,20 @@ use Illuminate\Support\ServiceProvider;
 
 class LaravelMaskedDumpServiceProvider extends ServiceProvider
 {
-    /**
-     * Bootstrap the application services.
-     */
+
+    protected string $path = '/../config/masked-dump.php';
+
     public function boot()
     {
         if ($this->app->runningInConsole()) {
-            $this->publishes([
-                __DIR__ . '/../config/masked-dump.php' => config_path('masked-dump.php'),
-            ], 'config');
+            $this->publishes([__DIR__.$this->path => config_path('masked-dump.php')], 'config');
         }
     }
 
-    /**
-     * Register the application services.
-     */
     public function register()
     {
-        $this->commands([
-            DumpDatabaseCommand::class,
-        ]);
+        $this->commands([DumpDatabaseCommand::class]);
 
-        $this->mergeConfigFrom(__DIR__.'/../config/masked-dump.php', 'masked-dump');
+        $this->mergeConfigFrom(__DIR__.$this->path, 'masked-dump');
     }
 }

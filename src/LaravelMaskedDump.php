@@ -2,18 +2,16 @@
 
 namespace BeyondCode\LaravelMaskedDumper;
 
+use BeyondCode\LaravelMaskedDumper\TableDefinitions\TableDefinition;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Schema;
 use Illuminate\Console\OutputStyle;
-use BeyondCode\LaravelMaskedDumper\TableDefinitions\TableDefinition;
 
 class LaravelMaskedDump
 {
-    /** @var DumpSchema */
-    protected $definition;
+    protected DumpSchema $definition;
 
-    /** @var OutputStyle */
-    protected $output;
+    protected OutputStyle $output;
 
     public function __construct(DumpSchema $definition, OutputStyle $output)
     {
@@ -21,7 +19,7 @@ class LaravelMaskedDump
         $this->output = $output;
     }
 
-    public function dump()
+    public function dump(): string
     {
         $tables = $this->definition->getDumpTables();
 
@@ -30,7 +28,7 @@ class LaravelMaskedDump
         $overallTableProgress = $this->output->createProgressBar(count($tables));
 
         foreach ($tables as $tableName => $table) {
-            $query .= "DROP TABLE IF EXISTS `$tableName`;" . PHP_EOL;
+            $query .= "DROP TABLE IF EXISTS `$tableName`;".PHP_EOL;
             $query .= $this->dumpSchema($table);
 
             if ($table->shouldDumpData()) {
@@ -69,25 +67,23 @@ class LaravelMaskedDump
         })->toArray();
     }
 
-    protected function dumpSchema(TableDefinition $table)
+    protected function dumpSchema(TableDefinition $table): string
     {
         $platform = $this->definition->getConnection()->getDoctrineSchemaManager()->getDatabasePlatform();
 
         $schema = new Schema([$table->getDoctrineTable()]);
 
-        return implode(";", $schema->toSql($platform)) . ";" . PHP_EOL;
+        return implode(";", $schema->toSql($platform)).";".PHP_EOL;
     }
 
-    protected function lockTable(string $tableName)
+    protected function lockTable(string $tableName): string
     {
-        return "LOCK TABLES `$tableName` WRITE;" . PHP_EOL .
-            "ALTER TABLE `$tableName` DISABLE KEYS;" . PHP_EOL;
+        return "LOCK TABLES `$tableName` WRITE;".PHP_EOL."ALTER TABLE `$tableName` DISABLE KEYS;".PHP_EOL;
     }
 
-    protected function unlockTable(string $tableName)
+    protected function unlockTable(string $tableName): string
     {
-        return "ALTER TABLE `$tableName` ENABLE KEYS;" . PHP_EOL .
-            "UNLOCK TABLES;" . PHP_EOL;
+        return "ALTER TABLE `$tableName` ENABLE KEYS;".PHP_EOL."UNLOCK TABLES;".PHP_EOL;
     }
 
     protected function dumpTableData(TableDefinition $table)
@@ -97,27 +93,28 @@ class LaravelMaskedDump
         $queryBuilder = $this->definition->getConnection()
             ->table($table->getDoctrineTable()->getName());
 
-
         $table->modifyQuery($queryBuilder);
 
         $queryBuilder->get()
             ->each(function ($row, $index) use ($queryBuilder, $table, &$query) {
-                $row = $this->transformResultForInsert((array)$row, $table);
+                $row = $this->transformResultForInsert((array) $row, $table);
                 $tableName = $table->getDoctrineTable()->getName();
 
-                $query .= "INSERT INTO `${tableName}` (`" . implode('`, `', array_keys($row)) . '`) VALUES ';
+                $query .= "INSERT INTO `${tableName}` (`".implode('`, `', array_keys($row)).'`) VALUES ';
                 $query .= "(";
 
                 $firstColumn = true;
+
                 foreach ($row as $value) {
-                    if (!$firstColumn) {
+                    if (! $firstColumn) {
                         $query .= ", ";
                     }
+
                     $query .= $value;
                     $firstColumn = false;
                 }
 
-                $query .= ");" . PHP_EOL;
+                $query .= ");".PHP_EOL;
             });
 
         return $query;

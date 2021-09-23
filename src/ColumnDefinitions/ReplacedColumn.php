@@ -21,7 +21,7 @@ class ReplacedColumn implements Column
     public function modifyValue($value, $rows)
     {
         if (! $this->replaceNull && is_null($value)) {
-            return $value;
+            return null;
         }
 
         if (is_callable($this->replacer)) {
