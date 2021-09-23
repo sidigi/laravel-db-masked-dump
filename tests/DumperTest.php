@@ -172,6 +172,8 @@ class DumperTest extends TestCase
         $this->assertMatchesTextSnapshot(file_get_contents($outputFile));
     }
 
+    //add test for replaceWhere
+
     /** @test */
     public function it_can_dump_certain_tables_as_schema_only()
     {

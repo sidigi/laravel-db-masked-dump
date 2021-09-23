@@ -11,10 +11,10 @@ class TableDefinition
     const DUMP_FULL = 'full';
     const DUMP_SCHEMA = 'schema';
 
-    protected $table;
-    protected $dumpType;
     protected $query;
-    protected $columns = [];
+    protected Table $table;
+    protected string $dumpType;
+    protected array $columns = [];
 
     public function __construct(Table $table)
     {
@@ -22,35 +22,49 @@ class TableDefinition
         $this->dumpType = static::DUMP_FULL;
     }
 
-    public function schemaOnly()
+    public function schemaOnly(): self
     {
         $this->dumpType = static::DUMP_SCHEMA;
 
         return $this;
     }
 
-    public function fullDump()
+    public function fullDump(): self
     {
         $this->dumpType = static::DUMP_FULL;
 
         return $this;
     }
 
-    public function query(callable $callable)
+    public function query(callable $callable): void
     {
         $this->query = $callable;
     }
 
-    public function mask(string $column)
+    public function mask(string $column): self
     {
         $this->columns[$column] = ColumnDefinition::mask($column);
 
         return $this;
     }
 
-    public function replace(string $column, $replacer, $replaceNull = true)
+    public function replace(string $column, $replacer, $replaceNull = true): self
     {
         $this->columns[$column] = ColumnDefinition::replace($column, $replacer, $replaceNull);
+
+        return $this;
+    }
+
+    public function replaceWhere(string $column, $replacer, callable $checker): self
+    {
+        $this->columns[$column] = ColumnDefinition::replaceWhere($column, $replacer, $checker);
+
+        return $this;
+    }
+
+    public function replaceWhereNot(string $column, $replacer, callable $checker): self
+    {
+        $this->columns[$column] = ColumnDefinition::replaceWhereNot($column, $replacer, $checker);
 
         return $this;
     }
@@ -74,12 +88,12 @@ class TableDefinition
         return $this->table;
     }
 
-    public function shouldDumpData()
+    public function shouldDumpData(): bool
     {
         return $this->dumpType === static::DUMP_FULL;
     }
 
-    public function modifyQuery($query)
+    public function modifyQuery($query): void
     {
         if (is_null($this->query)) {
             return;

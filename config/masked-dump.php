@@ -19,6 +19,16 @@ return [
                 return $faker->safeEmail;
             }, false);
 
+            $table->replaceWhere('updated_at', function (Faker $faker) {
+                return $faker->safeEmail;
+            }, function ($value) {
+                if ($value == null) {
+                    return true;
+                }
+
+                return false;
+            });
+
             $table->mask('password');
         })
         ->schemaOnly('failed_jobs')

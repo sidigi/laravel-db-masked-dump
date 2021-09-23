@@ -14,4 +14,14 @@ class ColumnDefinition
     {
         return new ReplacedColumn($column, $replacer, $replaceNull);
     }
+
+    public static function replaceWhere(string $column, $replacer, $checker)
+    {
+        return new ReplacedWhereColumn($column, $replacer, $checker);
+    }
+
+    public static function replaceWhereNot(string $column, $replacer, $checker)
+    {
+        return new ReplacedWhereNotColumn($column, $replacer, $checker);
+    }
 }
