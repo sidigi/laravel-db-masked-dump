@@ -63,10 +63,13 @@ class TableDefinition
         return $this;
     }
 
-    public function ignore(array $values, string $column = 'id'): self
+    public function ignore(array $ignores): self
     {
-        if ($this->table->hasColumn($column)) {
-            $this->ignore = array_merge($this->ignore, [$column => $values]);
+        foreach ($ignores as $column => $value){
+            if ($this->table->hasColumn($column)) {
+                $this->ignore = array_merge($this->ignore, [$column => $value]);
+            }
+
         }
 
         return $this;
