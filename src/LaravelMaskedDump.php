@@ -2,9 +2,8 @@
 
 namespace FenixDumper\LaravelMaskedDumper;
 
-use FenixDumper\LaravelMaskedDumper\TableDefinitions\TableDefinition;
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Schema;
+use FenixDumper\LaravelMaskedDumper\TableDefinitions\TableDefinition;
 use Illuminate\Console\OutputStyle;
 
 class LaravelMaskedDump
@@ -26,9 +25,9 @@ class LaravelMaskedDump
         $query = '';
 
         $overallTableProgress = $this->output->createProgressBar(count($tables));
-
         foreach ($tables as $tableName => $table) {
             $query .= "DROP TABLE IF EXISTS `$tableName`;".PHP_EOL;
+
             $query .= $this->dumpSchema($table);
 
             if ($table->shouldDumpData()) {
@@ -45,25 +44,16 @@ class LaravelMaskedDump
         return $query;
     }
 
-    protected function transformResultForInsert($row, TableDefinition $table)
+    protected function transformResultForInsert($row, TableDefinition $table): array
     {
-        /** @var Connection $connection */
         $connection = $this->definition->getConnection()->getDoctrineConnection();
 
         return collect($row)->map(function ($value, $column) use ($row, $connection, $table) {
-            if ($columnDefinition = $table->findColumn($column)) {
+            if (($columnDefinition = $table->findColumn($column)) && ! $table->isIgnored($row)) {
                 $value = $columnDefinition->modifyValue($value, $row);
             }
 
-            if ($value === null) {
-                return 'NULL';
-            }
-
-            if ($value === '') {
-                return '""';
-            }
-
-            return $connection->quote($value);
+            return is_null($value) ? 'NULL' : ($value === '' ? '""' : $connection->quote($value));
         })->toArray();
     }
 

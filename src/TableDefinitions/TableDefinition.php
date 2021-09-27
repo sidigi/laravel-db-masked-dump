@@ -2,9 +2,9 @@
 
 namespace FenixDumper\LaravelMaskedDumper\TableDefinitions;
 
+use Doctrine\DBAL\Schema\Table;
 use FenixDumper\LaravelMaskedDumper\ColumnDefinitions\ColumnDefinition;
 use FenixDumper\LaravelMaskedDumper\Contracts\Column;
-use Doctrine\DBAL\Schema\Table;
 
 class TableDefinition
 {
@@ -15,6 +15,7 @@ class TableDefinition
     protected Table $table;
     protected string $dumpType;
     protected array $columns = [];
+    protected array $ignore = [];
 
     public function __construct(Table $table)
     {
@@ -55,11 +56,29 @@ class TableDefinition
         return $this;
     }
 
-    public function whenReplace(string $column, callable $condition, $replacer): self
+    public function replaceWhen(string $column, $replacer, callable $condition): self
     {
         $this->columns[$column] = ColumnDefinition::replaceWhere($column, $replacer, $condition);
 
         return $this;
+    }
+
+    public function ignore(array $values, string $column = 'id'): self
+    {
+        if ($this->table->hasColumn($column)) {
+            $this->ignore = array_merge($this->ignore, [$column => $values]);
+        }
+
+        return $this;
+    }
+
+    public function isIgnored(array $row): bool
+    {
+        $check = collect($this->ignore)->filter(function ($item, $key) use ($row) {
+            return in_array($row[$key], $item);
+        });
+
+        return $check->isNotEmpty();
     }
 
     public function findColumn(string $column): ?Column

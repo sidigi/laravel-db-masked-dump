@@ -1,8 +1,8 @@
 <?php
 
+use Faker\Generator as Faker;
 use FenixDumper\LaravelMaskedDumper\DumpSchema;
 use FenixDumper\LaravelMaskedDumper\TableDefinitions\TableDefinition;
-use Faker\Generator as Faker;
 
 return [
     /**
@@ -15,11 +15,14 @@ return [
                 return $faker->name;
             });
 
-            $table->replace('email', $faker->safeEmail, false);
+            $table
+                ->ignore(['1'], 'id')
+                ->replace('email', $faker->safeEmail, false)
+                ->mask('password');
 
-            $table->whenReplace('updated_at', function ($value) {
+            $table->replaceWhen('updated_at', now()->addDay(), function ($value) {
                 return (bool) $value;
-            }, $faker->safeEmail);
+            });
 
             $table->replace('updated_at', function (Faker $faker, $value, $rows) {
                 if ($rows['created_at']) {
@@ -28,8 +31,6 @@ return [
 
                 return now();
             });
-
-            $table->mask('password');
         })
         ->schemaOnly('failed_jobs')
         ->schemaOnly('password_resets'),
