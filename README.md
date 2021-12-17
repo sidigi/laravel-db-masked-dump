@@ -9,6 +9,8 @@ You can :
 * Mask
 * Create rule for replace
 * Get schema or full dump
+* Set priority tables for dump
+* Disable constrain for table
 
 ## Installation
 

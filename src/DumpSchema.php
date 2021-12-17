@@ -2,9 +2,9 @@
 
 namespace FenixDumper\LaravelMaskedDumper;
 
-use FenixDumper\LaravelMaskedDumper\TableDefinitions\TableDefinition;
 use Doctrine\DBAL\Schema\Table;
 use Faker\Factory;
+use FenixDumper\LaravelMaskedDumper\TableDefinitions\TableDefinition;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Support\Facades\DB;
 
@@ -16,6 +16,7 @@ class DumpSchema
 
     protected $loadAllTables = false;
     protected $customizedTables = [];
+    protected $priorityTables = [];
 
     public function __construct($connectionName = null)
     {
@@ -44,6 +45,13 @@ class DumpSchema
     public function allTables(): self
     {
         $this->loadAllTables = true;
+
+        return $this;
+    }
+
+    public function priorityTables(array $tablesName): self
+    {
+        $this->priorityTables = $tablesName;
 
         return $this;
     }
@@ -91,6 +99,8 @@ class DumpSchema
             $this->dumpTables = collect($this->availableTables)->mapWithKeys(function (Table $table) {
                 return [$table->getName() => new TableDefinition($table)];
             })->toArray();
+
+            $this->dumpTables = array_replace(array_flip($this->priorityTables), $this->dumpTables);
         }
 
         foreach ($this->customizedTables as $tableName => $tableDefinition) {

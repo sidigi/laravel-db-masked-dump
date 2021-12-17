@@ -14,6 +14,7 @@ class TableDefinition
     protected $query;
     protected Table $table;
     protected string $dumpType;
+    protected bool $enableConstrain = true;
     protected array $columns = [];
     protected array $ignore = [];
 
@@ -21,6 +22,25 @@ class TableDefinition
     {
         $this->table = $table;
         $this->dumpType = static::DUMP_FULL;
+    }
+
+    public function isConstrain(): bool
+    {
+        return $this->enableConstrain;
+    }
+
+    public function enableConstrain(): self
+    {
+        $this->enableConstrain = true;
+
+        return $this;
+    }
+
+    public function disableConstrain(): self
+    {
+        $this->enableConstrain = false;
+
+        return $this;
     }
 
     public function schemaOnly(): self
@@ -65,11 +85,10 @@ class TableDefinition
 
     public function ignore(array $ignores): self
     {
-        foreach ($ignores as $column => $value){
+        foreach ($ignores as $column => $value) {
             if ($this->table->hasColumn($column)) {
                 $this->ignore = array_merge($this->ignore, [$column => $value]);
             }
-
         }
 
         return $this;

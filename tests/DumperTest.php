@@ -106,6 +106,7 @@ class DumperTest extends TestCase
         $this->app['config']['masked-dump.default'] = DumpSchema::define()
             ->allTables()
             ->table('users', function (TableDefinition $table) {
+                $table->ignore([]);
                 $table->replace('password', 'test');
             });
 

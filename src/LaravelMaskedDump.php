@@ -12,6 +12,8 @@ class LaravelMaskedDump
 
     protected OutputStyle $output;
 
+    protected array $tablesWithDisableConstrain = [];
+
     public function __construct(DumpSchema $definition, OutputStyle $output)
     {
         $this->definition = $definition;
@@ -25,6 +27,7 @@ class LaravelMaskedDump
         $query = '';
 
         $overallTableProgress = $this->output->createProgressBar(count($tables));
+
         foreach ($tables as $tableName => $table) {
             $query .= "DROP TABLE IF EXISTS `$tableName`;".PHP_EOL;
 
@@ -33,9 +36,21 @@ class LaravelMaskedDump
             if ($table->shouldDumpData()) {
                 $query .= $this->lockTable($tableName);
 
+                if (! $table->isConstrain()) {
+                    $query .= $this->disableConstraintsTable($tableName);
+                }
+
                 $query .= $this->dumpTableData($table);
 
                 $query .= $this->unlockTable($tableName);
+            }
+
+            $overallTableProgress->advance();
+        }
+
+        if ($this->tablesWithDisableConstrain) {
+            foreach ($this->tablesWithDisableConstrain as $tableName) {
+                $query .= $this->enableConstraintsTable($tableName);
             }
 
             $overallTableProgress->advance();
@@ -64,6 +79,18 @@ class LaravelMaskedDump
         $schema = new Schema([$table->getDoctrineTable()]);
 
         return implode(";", $schema->toSql($platform)).";".PHP_EOL;
+    }
+
+    protected function disableConstraintsTable(string $tableName): string
+    {
+        $this->tablesWithDisableConstrain[] = $tableName;
+
+        return "ALTER TABLE `$tableName` NOCHECK CONSTRAINT ALL;";
+    }
+
+    protected function enableConstraintsTable(string $tableName): string
+    {
+        return "ALTER TABLE `$tableName` WITH CHECK CHECK CONSTRAINT ALL;";
     }
 
     protected function lockTable(string $tableName): string

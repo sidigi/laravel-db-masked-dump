@@ -16,7 +16,8 @@ return [
             });
 
             $table
-                ->ignore(['1'], 'id')
+                ->ignore(['1'])
+                ->disableConstrain()
                 ->replace('email', $faker->safeEmail, false)
                 ->mask('password');
 
@@ -33,5 +34,6 @@ return [
             });
         })
         ->schemaOnly('failed_jobs')
-        ->schemaOnly('password_resets'),
+        ->schemaOnly('password_resets')
+        ->priorityTables(['password_resets']),
 ];
