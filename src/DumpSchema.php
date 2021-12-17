@@ -15,6 +15,7 @@ class DumpSchema
     protected $dumpTables = [];
 
     protected $loadAllTables = false;
+    protected $disableAllConstrains = false;
     protected $customizedTables = [];
     protected $priorityTables = [];
 
@@ -23,12 +24,24 @@ class DumpSchema
         $this->connectionName = $connectionName;
     }
 
+    public function disableAllConstrains(bool $disable = true): self
+    {
+        $this->disableAllConstrains = $disable;
+
+        return $this;
+    }
+
+    public function isDisableAllConstrains(): bool
+    {
+        return $this->disableAllConstrains;
+    }
+
     public static function define($connectionName = null): DumpSchema
     {
         return new static($connectionName);
     }
 
-    public function schemaOnly(string $tableName)
+    public function schemaOnly(string $tableName): DumpSchema
     {
         return $this->table($tableName, function (TableDefinition $table) {
             $table->schemaOnly();
@@ -74,15 +87,12 @@ class DumpSchema
         return $table;
     }
 
-    /**
-     * @return TableDefinition[]
-     */
-    public function getDumpTables()
+    public function getDumpTables(): array
     {
         return $this->dumpTables;
     }
 
-    protected function loadAvailableTables()
+    protected function loadAvailableTables(): void
     {
         if ($this->availableTables !== []) {
             return;
@@ -91,7 +101,7 @@ class DumpSchema
         $this->availableTables = $this->getConnection()->getDoctrineSchemaManager()->listTables();
     }
 
-    public function load()
+    public function load(): void
     {
         $this->loadAvailableTables();
 

@@ -35,5 +35,6 @@ return [
         })
         ->schemaOnly('failed_jobs')
         ->schemaOnly('password_resets')
+        ->disableAllConstrains()
         ->priorityTables(['password_resets']),
 ];

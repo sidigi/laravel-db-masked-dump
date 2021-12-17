@@ -36,7 +36,9 @@ class LaravelMaskedDump
             if ($table->shouldDumpData()) {
                 $query .= $this->lockTable($tableName);
 
-                if (! $table->isConstrain()) {
+                if ($this->definition->isDisableAllConstrains()) {
+                    $query .= $this->disableConstraintsTable($tableName);
+                } elseif (! $table->isConstrain()) {
                     $query .= $this->disableConstraintsTable($tableName);
                 }
 

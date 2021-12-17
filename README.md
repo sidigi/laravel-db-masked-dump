@@ -5,12 +5,41 @@ A database dumping package that allows you to replace and mask columns while dum
 
 You can :
 * Replace
-* Ignore
+```bash
+$table->replace();
+```
+
+* Ignore ids
+```bash
+$table->ignore();
+```
+
 * Mask
+```bash
+$table->mask();
+```
+
 * Create rule for replace
+```bash
+$table->replaceWhen();
+```
+
 * Get schema or full dump
+```bash
+$table->schemaOnly();
+```
+
 * Set priority tables for dump
+```bash
+$shema->priorityTables();
+```
+
 * Disable constrain for table
+```bash
+$table->disableConstrain();
+$shema->disableAllConstrains();
+```
+
 
 ## Installation
 
