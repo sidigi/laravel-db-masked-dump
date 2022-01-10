@@ -28,6 +28,10 @@ class LaravelMaskedDump
 
         $overallTableProgress = $this->output->createProgressBar(count($tables));
 
+        if ($this->definition->isDisableAllConstrains()) {
+            $query .= $this->disableAllConstraints();
+        }
+
         foreach ($tables as $tableName => $table) {
             $query .= "DROP TABLE IF EXISTS `$tableName`;".PHP_EOL;
 
@@ -36,9 +40,7 @@ class LaravelMaskedDump
             if ($table->shouldDumpData()) {
                 $query .= $this->lockTable($tableName);
 
-                if ($this->definition->isDisableAllConstrains()) {
-                    $query .= $this->disableConstraintsTable($tableName);
-                } elseif (! $table->isConstrain()) {
+                if (! $table->isConstrain()) {
                     $query .= $this->disableConstraintsTable($tableName);
                 }
 
@@ -54,7 +56,13 @@ class LaravelMaskedDump
             foreach ($this->tablesWithDisableConstrain as $tableName) {
                 $query .= $this->enableConstraintsTable($tableName);
             }
+        }
 
+        if ($this->definition->isDisableAllConstrains()) {
+            $query .= $this->enableAllConstraints();
+        }
+
+        if ($this->tablesWithDisableConstrain || $this->definition->isDisableAllConstrains()) {
             $overallTableProgress->advance();
         }
 
@@ -81,6 +89,16 @@ class LaravelMaskedDump
         $schema = new Schema([$table->getDoctrineTable()]);
 
         return implode(";", $schema->toSql($platform)).";".PHP_EOL;
+    }
+
+    protected function disableAllConstraints(): string
+    {
+        return "SET FOREIGN_KEY_CHECKS=0;";
+    }
+
+    protected function enableAllConstraints(): string
+    {
+        return "SET FOREIGN_KEY_CHECKS=1;";
     }
 
     protected function disableConstraintsTable(string $tableName): string
