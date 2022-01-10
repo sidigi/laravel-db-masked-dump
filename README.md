@@ -1,4 +1,5 @@
 # Laravel DB Masked Dump
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/sergefenix/laravel-db-masked-dump.svg?style=flat-square)](https://packagist.org/packages/sergefenix/laravel-db-masked-dump)
 [![Total Downloads](https://img.shields.io/packagist/dt/sergefenix/laravel-db-masked-dump.svg?style=flat-square)](https://packagist.org/packages/sergefenix/laravel-db-masked-dump)
 
 A database dumping package that allows you to replace and mask columns while dumping your database.
@@ -12,6 +13,7 @@ $table->replace();
 * Ignore ids
 ```bash
 $table->ignore();
+$table->isIgnored();
 ```
 
 * Mask
@@ -39,7 +41,13 @@ $shema->priorityTables();
 $table->disableConstrain();
 $shema->disableAllConstrains();
 ```
-
+* More
+```bash
+modifyQuery()
+fullDump()
+schemaOnly()
+shouldDumpData()
+```
 
 ## Installation
 
