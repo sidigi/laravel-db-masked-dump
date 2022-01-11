@@ -93,24 +93,24 @@ class LaravelMaskedDump
 
     protected function disableAllConstraints(): string
     {
-        return "SET FOREIGN_KEY_CHECKS=0;";
+        return "SET FOREIGN_KEY_CHECKS=0;".PHP_EOL;
     }
 
     protected function enableAllConstraints(): string
     {
-        return "SET FOREIGN_KEY_CHECKS=1;";
+        return "SET FOREIGN_KEY_CHECKS=1;".PHP_EOL;
     }
 
     protected function disableConstraintsTable(string $tableName): string
     {
         $this->tablesWithDisableConstrain[] = $tableName;
 
-        return "ALTER TABLE `$tableName` NOCHECK CONSTRAINT ALL;";
+        return "ALTER TABLE `$tableName` NOCHECK CONSTRAINT ALL;".PHP_EOL;
     }
 
     protected function enableConstraintsTable(string $tableName): string
     {
-        return "ALTER TABLE `$tableName` WITH CHECK CHECK CONSTRAINT ALL;";
+        return "ALTER TABLE `$tableName` WITH CHECK CHECK CONSTRAINT ALL;".PHP_EOL;
     }
 
     protected function lockTable(string $tableName): string
