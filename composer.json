@@ -1,16 +1,16 @@
 {
-    "name": "sergefenix/laravel-db-masked-dump",
+    "name": "sidigi/laravel-db-masked-dump",
     "description": "Dump masked information from your database",
     "keywords": [
         "sergefenix",
         "laravel-db-masked-dump"
     ],
-    "homepage": "https://github.com/sergefenix/laravel-db-masked-dump",
+    "homepage": "https://github.com/sidigi/laravel-db-masked-dump",
     "license": "MIT",
     "authors": [
         {
-            "name": "Sergey Demidenko",
-            "email": "sergefenix@gmail.com",
+            "name": "Evgenii Mikulich",
+            "email": "sidigicoder@gmail.com",
             "role": "Developer"
         }
     ],
