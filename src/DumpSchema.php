@@ -81,7 +81,7 @@ class DumpSchema
         });
 
         if (is_null($table)) {
-            throw new \Exception("Invalid table name ${tableName}");
+            throw new \Exception("Invalid table name {$tableName}");
         }
 
         return $table;
